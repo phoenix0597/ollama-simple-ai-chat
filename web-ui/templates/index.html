@@ -17,6 +17,7 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow: hidden; /* Предотвращаем скролл всей страницы */
         }
 
         .header {
@@ -24,6 +25,7 @@
             color: white;
             padding: 1rem;
             text-align: center;
+            flex-shrink: 0; /* Заголовок не сжимается */
         }
 
         .chat-container {
@@ -34,6 +36,8 @@
             margin: 0 auto;
             width: 100%;
             padding: 1rem;
+            min-height: 0; /* Позволяет контейнеру сжиматься */
+            overflow: hidden; /* Предотвращаем переполнение */
         }
 
         .messages {
@@ -43,7 +47,7 @@
             background: white;
             border-radius: 8px;
             margin-bottom: 1rem;
-            min-height: 400px;
+            min-height: 200px; /* Минимальная высота для сообщений */
         }
 
         .message {
@@ -71,17 +75,18 @@
             border: 1px solid #dee2e6;
         }
 
-        .input-container {
+        .input-section {
+            flex-shrink: 0; /* Секция ввода не сжимается */
             display: flex;
+            flex-direction: column;
             gap: 0.5rem;
-            align-items: center;
         }
 
         .controls-row {
             display: flex;
             gap: 0.5rem;
-            margin-bottom: 0.5rem;
             align-items: center;
+            flex-wrap: wrap; /* Позволяем элементам переноситься */
         }
 
         .model-select {
@@ -97,10 +102,17 @@
             align-items: center;
             gap: 0.5rem;
             font-size: 0.9rem;
+            white-space: nowrap; /* Предотвращаем перенос текста */
         }
 
         .stream-toggle input[type="checkbox"] {
             transform: scale(1.2);
+        }
+
+        .input-container {
+            display: flex;
+            gap: 0.5rem;
+            align-items: flex-end; /* Выравниваем по нижнему краю */
         }
 
         .message-input {
@@ -111,6 +123,8 @@
             font-size: 1rem;
             resize: vertical;
             min-height: 45px;
+            max-height: 120px; /* Ограничиваем максимальную высоту */
+            font-family: inherit;
         }
 
         .send-button {
@@ -122,6 +136,7 @@
             cursor: pointer;
             font-size: 1rem;
             min-width: 80px;
+            height: fit-content; /* Кнопка подстраивается под содержимое */
         }
 
         .send-button:hover:not(:disabled) {
@@ -138,6 +153,7 @@
             text-align: center;
             padding: 1rem;
             color: #666;
+            flex-shrink: 0;
         }
 
         .error {
@@ -153,6 +169,7 @@
             border-radius: 4px;
             margin-bottom: 0.5rem;
             font-size: 0.9rem;
+            flex-shrink: 0;
         }
 
         .status-connected {
@@ -167,18 +184,89 @@
             border: 1px solid #f5c6cb;
         }
 
+        /* Улучшенная адаптивность для мобильных устройств */
+        @media (max-width: 768px) {
+            .chat-container {
+                padding: 0.5rem;
+            }
+
+            .header {
+                padding: 0.75rem;
+            }
+
+            .header h1 {
+                font-size: 1.25rem;
+            }
+
+            .header p {
+                font-size: 0.9rem;
+            }
+        }
+
         @media (max-width: 600px) {
             .controls-row {
                 flex-direction: column;
                 align-items: stretch;
             }
 
+            .model-select {
+                min-width: unset;
+                width: 100%;
+            }
+
+            .stream-toggle {
+                justify-content: center;
+            }
+
             .input-container {
                 flex-direction: column;
+                align-items: stretch;
             }
 
             .message-input {
                 min-height: 60px;
+                margin-bottom: 0.5rem;
+            }
+
+            .send-button {
+                min-width: unset;
+                width: 100%;
+            }
+        }
+
+        /* Дополнительные стили для очень маленьких экранов */
+        @media (max-width: 400px) {
+            .chat-container {
+                padding: 0.25rem;
+            }
+
+            .messages {
+                padding: 0.5rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .message {
+                padding: 0.5rem;
+                max-width: 95%;
+            }
+        }
+
+        /* Обеспечиваем корректную работу в landscape режиме на мобильных */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .header {
+                padding: 0.5rem;
+            }
+
+            .header h1 {
+                font-size: 1.1rem;
+            }
+
+            .header p {
+                font-size: 0.8rem;
+            }
+
+            .messages {
+                min-height: 150px;
             }
         }
     </style>
@@ -202,28 +290,30 @@
             <p>🤖 Thinking...</p>
         </div>
 
-        <div class="controls-row">
-            <select class="model-select" id="modelSelect">
-                <option value="deepseek-r1">DeepSeek-R1</option>
-            </select>
-            <label class="stream-toggle">
-                <input type="checkbox" id="streamToggle" checked>
-                <span>Stream responses</span>
-            </label>
-        </div>
+        <div class="input-section">
+            <div class="controls-row">
+                <select class="model-select" id="modelSelect">
+                    <option value="deepseek-r1">DeepSeek-R1</option>
+                </select>
+                <label class="stream-toggle">
+                    <input type="checkbox" id="streamToggle" checked>
+                    <span>Stream responses</span>
+                </label>
+            </div>
 
-        <div class="input-container">
-            <textarea
-                class="message-input"
-                id="messageInput"
-                placeholder="Type your message here..."
-                rows="1"
-                onkeydown="handleKeyPress(event)"
-                oninput="autoResize(this)"
-            ></textarea>
-            <button class="send-button" id="sendButton" onclick="sendMessage()">
-                Send
-            </button>
+            <div class="input-container">
+                <textarea
+                    class="message-input"
+                    id="messageInput"
+                    placeholder="Type your message here..."
+                    rows="1"
+                    onkeydown="handleKeyPress(event)"
+                    oninput="autoResize(this)"
+                ></textarea>
+                <button class="send-button" id="sendButton" onclick="sendMessage()">
+                    Send
+                </button>
+            </div>
         </div>
     </div>
 
@@ -234,7 +324,7 @@
         // Автоматическое изменение размера textarea
         function autoResize(textarea) {
             textarea.style.height = 'auto';
-            textarea.style.height = Math.min(textarea.scrollHeight, 150) + 'px';
+            textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
         }
 
         // Показать статус подключения
@@ -467,6 +557,21 @@
         window.addEventListener('error', (event) => {
             console.error('Page error:', event.error);
             showStatus('Page error occurred', true);
+        });
+
+        // Обработка изменения размера окна для обеспечения видимости поля ввода
+        window.addEventListener('resize', () => {
+            const messageInput = document.getElementById('messageInput');
+            if (messageInput) {
+                // Прокручиваем к полю ввода при изменении размера окна
+                setTimeout(() => {
+                    messageInput.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'nearest',
+                        inline: 'nearest'
+                    });
+                }, 100);
+            }
         });
     </script>
 </body>
