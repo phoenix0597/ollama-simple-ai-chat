@@ -27,7 +27,8 @@ services:
       - ./init-ollama.sh:/init-ollama.sh
     environment:
       - OLLAMA_HOST=ollama:11434
-    command: ["/bin/bash", "/init-ollama.sh"]
+    entrypoint: ["/bin/sh"]
+    command: ["-c", "chmod +x /init-ollama.sh && /init-ollama.sh"]
     restart: "no"
 
   web-ui:
