@@ -24,22 +24,22 @@ docker-compose up --build -d
 
 Управление
 
-# Остановить все сервисы
+## Остановить все сервисы
 ```bash
 docker-compose down
 ```
 
-# Остановить и удалить данные
+## Остановить и удалить данные
 ```bash
 docker-compose down -v
 ```
 
-# Перезапустить
+## Перезапустить
 ```bash
 docker-compose restart
 ```
 
-# Посмотреть логи
+## Посмотреть логи
 
 ```bash
 docker-compose logs -f
@@ -53,7 +53,7 @@ docker-compose logs -f
 Запустит Ollama
 Дождется готовности сервиса
 Загрузит модель DeepSeek-R1:8b 
-(изменить загружаемую модель можно в скрипте init-ollama.sh)
+(как изменить загружаемую модель см. ниже)
 Запустит веб-интерфейс для тестирования
 
 Модель будет сохранена в Docker volume, так что при перезапуске повторно загружаться не будет.
@@ -68,12 +68,14 @@ cp .env.example .env
 
 ### Смена AI модели
 Для смены модели ИИ измените значение OLLAMA_MODEL в файле .env:
-bash# Примеры популярных моделей
-OLLAMA_MODEL=deepseek-r1     # Модель по умолчанию
-OLLAMA_MODEL=llama3.1        # Llama 3.1
-OLLAMA_MODEL=llama3.2        # Llama 3.2  
-OLLAMA_MODEL=mistral         # Mistral
-OLLAMA_MODEL=codellama       # Code Llama
-OLLAMA_MODEL=gemma2          # Gemma 2
+bash# Примеры популярных моделей:
+
+* OLLAMA_MODEL=deepseek-r1     # Модель по умолчанию
+* OLLAMA_MODEL=llama3.1        # Llama 3.1
+* OLLAMA_MODEL=llama3.2        # Llama 3.2
+* OLLAMA_MODEL=mistral         # Mistral
+* OLLAMA_MODEL=codellama       # Code Llama
+* OLLAMA_MODEL=gemma2          # Gemma 2
+
 
 Все доступные модели см. здесь: https://ollama.com/library
