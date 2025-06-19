@@ -1,31 +1,21 @@
-# Ollama DeepSeek-R1 Setup
+# Ollama simple AI chat (запускается локальная ИИ-модель DeepSeek-R1 и др. и веб-интерфейс)
 
 Полноценное решение для запуска Ollama с моделью DeepSeek-R1 и веб-интерфейсом.
 
 ## Запуск
 
-1. Клонируйте репозиторий и перейдите в директорию:
+1. Клонируйте репозиторий и перейдите в директорию приложения:
 ```bash
-cd ai-agent-with-rag
+git clone https://github.com/phoenix0597/ollama-simple-ai-chat.git
+cd ollama-simple-ai-chat
 ```
-
-2. Сделайте скрипт инициализации исполняемым:
-```bash
-chmod +x init-ollama.sh
-```
-
-3. Запустите все сервисы:
+2. Запустите все сервисы:
 
 ```bash
-docker-compose up -d
+docker-compose up --build -d
 ```
 
-4. Проверьте логи инициализации:
-
-```bash docker-compose logs -f ollama-init
-```
-
-5. Откройте веб-интерфейс: http://localhost:8080
+3. Откройте веб-интерфейс: http://localhost:8080
 
 Сервисы
 
@@ -56,31 +46,34 @@ docker-compose logs -f
 ```
 
 
-## Запуск
 
-1. Создайте директорию и файлы:
-```bash
-mkdir ollama-setup && cd ollama-setup
-# Создайте все файлы согласно структуре выше
-Код
-
-
-Сделайте скрипт исполняемым:
-
-chmod +x init-ollama.sh
-
-Запустите:
-
-docker-compose up -d
-
-Откройте http://localhost:8080 для доступа к веб-интерфейсу.
-
-Система автоматически:
+## Система автоматически:
 
 
 Запустит Ollama
 Дождется готовности сервиса
-Загрузит модель DeepSeek-R1
+Загрузит модель DeepSeek-R1:8b 
+(изменить загружаемую модель можно в скрипте init-ollama.sh)
 Запустит веб-интерфейс для тестирования
 
 Модель будет сохранена в Docker volume, так что при перезапуске повторно загружаться не будет.
+
+## Конфигурация
+### Переменные окружения
+Все основные настройки приложения выносятся в файл .env. Скопируйте .env.example в .env и настройте по своим потребностям:
+
+```bash
+cp .env.example .env
+```
+
+### Смена AI модели
+Для смены модели ИИ измените значение OLLAMA_MODEL в файле .env:
+bash# Примеры популярных моделей
+OLLAMA_MODEL=deepseek-r1     # Модель по умолчанию
+OLLAMA_MODEL=llama3.1        # Llama 3.1
+OLLAMA_MODEL=llama3.2        # Llama 3.2  
+OLLAMA_MODEL=mistral         # Mistral
+OLLAMA_MODEL=codellama       # Code Llama
+OLLAMA_MODEL=gemma2          # Gemma 2
+
+Все доступные модели см. здесь: https://ollama.com/library
