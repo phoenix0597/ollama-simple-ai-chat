@@ -17,15 +17,19 @@ app = FastAPI()
 
 # Настройка шаблонов и статических файлов
 templates = Jinja2Templates(directory="templates")
-# Раскомментируйте следующую строку если у вас есть папка static
+# Раскомментировать если будет папка static
 # app.mount("/static", StaticFiles(directory="static"), name="static")
 
+# Конфигурация из переменных окружения
 OLLAMA_BASE_URL = os.getenv('OLLAMA_BASE_URL', 'http://localhost:11434')
+OLLAMA_MODEL = os.environ.get('OLLAMA_MODEL', 'deepseek-r1')
+WEB_UI_PORT = os.getenv('WEB_UI_PORT', 8080)
+OLLAMA_HOST = os.getenv('OLLAMA_HOST', '0.0.0.0')
 
 # Pydantic модели для валидации данных
 class ChatRequest(BaseModel):
     message: str
-    model: Optional[str] = 'deepseek-r1'
+    model: Optional[str] = OLLAMA_MODEL
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -134,4 +138,4 @@ async def chat_stream(chat_request: ChatRequest):
 
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run(app, host='0.0.0.0', port=8080)
+    uvicorn.run(app, host=OLLAMA_HOST, port=WEB_UI_PORT)
